@@ -50,6 +50,14 @@ export default function Activities() {
     const [recipient, setReciepient] = useState("");
 
 
+    //Token Variables
+
+    const [tokenName, setTokenName] = useState("");
+    const [tokenSymbol, setTokenSymbol] = useState("");
+    const [tokenSupply, setTokenSupply] = useState("");
+    const [tokenIcon, setTokenIcon] = useState("");
+
+
     const ref = useRef(null);
     useEffect(() => {
         if (onConnect) {
@@ -140,16 +148,24 @@ export default function Activities() {
 
 
     async function mintNewToken() {
-        if (amount == "") {
-            alert('enter a valid amount');
+        if (tokenIcon == "" || tokenName == "" || tokenSupply == "" || tokenSymbol == "") {
+            alert('One of these fields is empty');
             return
         }
-        if (recipient == "") {
-            alert("Recipient can't be empty");
-            return;
-        }
-
         setLoading(true)
+
+        async function createToken() {
+
+            const tokenMintAddress = await createMint(
+                connection,
+                payer,
+                payer.publicKey,
+                payer.publicKey,
+                9,
+                tokenKeyPair);
+
+            console.log(tokenMintAddress);
+        }
 
         const transaction = new Transaction().add(
             SystemProgram.transfer({
