@@ -1,7 +1,7 @@
 "use client"
 import React, { useEffect, useRef, useState } from 'react'
 import CustomInput from '../components/customInput/customInput';
-import { Close, Countertops, Email, EuroSymbol, Money, Numbers, Wallet, FolderCopy } from '@mui/icons-material';
+import { Close, Countertops, Email, EuroSymbol, Money, Numbers, Wallet, FolderCopy, NumbersSharp } from '@mui/icons-material';
 
 import { useWalletMultiButton } from '@solana/wallet-adapter-base-ui';
 import { useAnchorWallet, useConnection, useWallet } from "@solana/wallet-adapter-react";
@@ -56,6 +56,7 @@ export default function Activities() {
     const [tokenSymbol, setTokenSymbol] = useState("");
     const [tokenSupply, setTokenSupply] = useState("");
     const [tokenIcon, setTokenIcon] = useState("");
+    const [decimals, setDecimals] = useState(1)
 
 
     const ref = useRef(null);
@@ -156,13 +157,16 @@ export default function Activities() {
 
         async function createToken() {
 
+            const tokenKeyPair = Keypair.generate();
+
             const tokenMintAddress = await createMint(
                 connection,
-                payer,
-                payer.publicKey,
-                payer.publicKey,
-                9,
-                tokenKeyPair);
+                wallet,
+                publicKey,
+                publicKey,
+                decimals,
+                tokenKeyPair
+            )
 
             console.log(tokenMintAddress);
         }
@@ -305,6 +309,7 @@ export default function Activities() {
                                         <CustomInput
                                             addOnStart={<Email size={10} />}
                                             label={"Token Name"}
+                                            onChange={(e) => setTokenName(e.target.value)}
                                             placeholder={"Enter Token Name"}
                                         />
                                     </div>
@@ -312,6 +317,7 @@ export default function Activities() {
                                         <CustomInput
                                             addOnStart={<Countertops size={10} />}
                                             label={"Token Symbol"}
+                                            onChange={(e) => setTokenSymbol(e.target.value)}
                                             placeholder={"Enter your preffered Token Symbol"}
                                         />
                                     </div>
@@ -320,6 +326,7 @@ export default function Activities() {
                                             addOnStart={<Numbers />}
                                             label={"Token Supply"}
                                             type="number"
+                                            onChange={(e) => setTokenSupply(e.target.value)}
                                             placeholder={"Enter total supply of token"}
                                         />
                                     </div>
@@ -327,9 +334,19 @@ export default function Activities() {
                                         <CustomInput
                                             addOnStart={<EuroSymbol />}
                                             label={"Token Icon"}
+                                            onChange={(e) => setTokenIcon(e.target.value)}
                                             placeholder={"Enter url to token icon"}
                                         />
                                     </div>
+                                    <div className='mb-3'>
+                                        <CustomInput
+                                            addOnStart={<NumbersSharp />}
+                                            label={"Decimals"}
+                                            onChange={(e) => setDecimals(e.target.value)}
+                                            placeholder={"Enter Decimals default is 1"}
+                                        />
+                                    </div>
+
 
                                     <div className='mb-3'>
                                         <div className='flex flex-row justify-center py-4'>
